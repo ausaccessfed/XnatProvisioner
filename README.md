@@ -36,17 +36,13 @@ This plugin only manages users' assignment to projects via the default XNAT proj
     - Project ID Prefix: fror XNAT project IDs. This value is appended to the COU id that is the child COU project COmanage object. Max 6 characters.
     - Deliminter for XNAT Project Title: This is the delimiter value used in the XNAT Project Running Title to separate the parent COU name and the child COU name. Max 2 characters.
 
-### COmanage COU
-- for each project to be managed as an XNAT Project this COmanage plugin uses nested COmanage COUs: a parent and a child COU. A parent can have multiple child COUs representing different XNAT Projects. The Parent COU's name is the project Name, the child COU is the XNAT project. These COU name values are used to label XNAT Project _Titles_ and _Running Titles_.
-A XNAT Project ID is the COManage child COU (containing the string xnat) prefixed with the **Project ID Prefix**. 
-- Create the followin COUs:
-    - Add a COU to represent the Project Name as a parent COU 
-    - add one or more child COUs as the XNAT Project(s). The child COU must contain the string "xnat" in its name (upper or lowercase).
-
 ### COmanage Services Objects
-- Create a COManage Service Object for each child COU that represents an XNAT project. Each XNAT project to be managed uses a COmanage Services Object to link a child COU to an XNAT Project.
 - Add a COmanage Services Object with the following configuration options:
-    - Select the COU object to attach to the service, the COU object that represents an XNAT project (ie: the child COU with a name that includes the "xnat" string).
+    - Name: this will be the XNAT *Project Title"
+    - COU: Select a COU - this will provision users linked to the COU (via _Role Attributes_ to the XNAT Project)
+    - Short Label: This is the XNAT *Project ID* and must include the text "xnat" to indicate to COmanage that it is an XNAT project and the XNAT *Project ID* (less the text "xnat").
+
+Note: The XNAT _Running Title_ is the concat of _Project ID Prefix_ and the _Short Label_ (less the text "xnat").
 
 ### COmanage CO Person Objects
 - COmanage CO Person objects are assigned roles to be provisioned to XNAT and to also be assigned to XNAT Projects.
@@ -59,6 +55,6 @@ A XNAT Project ID is the COManage child COU (containing the string xnat) prefixe
 
 ## Versions
 This COmanage Plugin has been tested with the following platform versions:
-COmanage: v4.3.4
-XNAT: version 1.8.10.1, build: 52
+- COmanage: v4.3.4
+- XNAT: version 1.8.10.1, build: 52
  
