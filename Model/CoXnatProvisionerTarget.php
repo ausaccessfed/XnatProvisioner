@@ -382,14 +382,14 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $xnatPath = "data/projects";
     $this->createHttpClient($coProvisioningTargetData, "");
     $xnatProjectList = json_decode($this->Http->get("/" . $xnatPath), true);
+    //$this->log("FUNCTION findXnatProject - xnatProjectList..... : " . print_r($xnatProjectList, true));
 
-    //$this->log("Projects in XNAT list: " . print_r($xnatProjectList['ResultSet']['Result'], true));
-    
-    $count = $xnatProjectList['ResultSet']['totalRecords'] - 1;
-    if (!empty($xnatProjectList)) {
-      while ($count != 0) {
+    $count = 0;
+    if (!empty($xnatProjectList['ResultSet']['Result'])) {
+      $count = $xnatProjectList['ResultSet']['totalRecords'];
+      while ($count > 0) {
+        $this->log("Projects count: " . print_r($count, true));
         if ($xnatProjectList['ResultSet']['Result'][$count]['ID'] == $xnatProjectId) {
-          //$this->log("VAL..... : " . print_r($xnatProjectList['ResultSet']['Result'][$count], true));
           return $xnatProjectList['ResultSet']['Result'][$count];
         }
         $count--;
