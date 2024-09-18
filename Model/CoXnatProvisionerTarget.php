@@ -309,9 +309,9 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $xnatProjectDelimiter = $coProvisioningTargetData['CoXnatProvisionerTarget']['project_name_delimiter'];
 
     $xnatProjectId = $xnatProjectIdPrefix . str_replace("xnat", "", strtolower($provisioningData['CoService']['short_label']));
-    $xnatProjectTitle = $provisioningData['CoService']['name'];
-    $xnatRunningTitle = $xnatProjectId . $xnatProjectDelimiter . $xnatProjectTitle;
-    $xnatDescription =  $provisioningData['CoService']['description'];
+    $xnatProjectTitle = trim($provisioningData['CoService']['name']);
+    $xnatRunningTitle = trim($xnatProjectId . $xnatProjectDelimiter . $xnatProjectTitle);
+    $xnatDescription = trim($provisioningData['CoService']['description']);
 
     $xml = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
             <xnat:Project ID='$xnatProjectId' 
@@ -374,8 +374,6 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     
     $xnatProjectList = array();
     $xnatProjectIdPrefix = $coProvisioningTargetData['CoXnatProvisionerTarget']['project_id_prefix'];
-    //$xnatProjectId = $xnatProjectIdPrefix . $couObj['Cou']['id'];
-    //$xnatProjectId = $provisioningData['CoService']['short_label'];
     $xnatProjectId = $xnatProjectIdPrefix . str_replace("xnat", "", strtolower($provisioningData['CoService']['short_label']));
     $this->log("FUNCTION findXnatProject - xnatProjectId: " . print_r($xnatProjectId, true));
 
@@ -384,10 +382,11 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $xnatProjectList = json_decode($this->Http->get("/" . $xnatPath), true);
     //$this->log("FUNCTION findXnatProject - xnatProjectList..... : " . print_r($xnatProjectList, true));
 
-    $count = 0;
+    $count = -1;
     if (!empty($xnatProjectList['ResultSet']['Result'])) {
-      $count = $xnatProjectList['ResultSet']['totalRecords'];
-      while ($count > 0) {
+      $count = $xnatProjectList['ResultSet']['totalRecords'] - 1 ;  // one record in array = index = 0
+      $this->log("FUNCTION findXnatProject - count ..... : " . print_r($count, true));
+      while ($count >= 0) {
         $this->log("Projects count: " . print_r($count, true));
         if ($xnatProjectList['ResultSet']['Result'][$count]['ID'] == $xnatProjectId) {
           return $xnatProjectList['ResultSet']['Result'][$count];
@@ -694,9 +693,9 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         $xnatProjectDelimiter = $coProvisioningTargetData['CoXnatProvisionerTarget']['project_name_delimiter'];
     
         $xnatProjectId = $xnatProjectIdPrefix . str_replace("xnat", "", strtolower($provisioningData['CoService']['short_label']));
-        $xnatProjectTitle = $provisioningData['CoService']['name'];
-        $xnatRunningTitle = $xnatProjectId . $xnatProjectDelimiter . $xnatProjectTitle;
-        $xnatDescription =  $provisioningData['CoService']['description'];
+        $xnatProjectTitle = trim($provisioningData['CoService']['name']);
+        $xnatRunningTitle = trim($xnatProjectId . $xnatProjectDelimiter . $xnatProjectTitle);
+        $xnatDescription = trim($provisioningData['CoService']['description']);
 
         if ($xnatProjectTitle != $xnatProjectDetail['name'] || $xnatRunningTitle != $xnatProjectDetail['secondary_ID'] ){
           $updateProject = true;
