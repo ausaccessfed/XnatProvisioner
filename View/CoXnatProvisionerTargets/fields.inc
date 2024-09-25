@@ -72,9 +72,13 @@
 <ul id="<?php print $this->action; ?>_co_xnat_provisioner_target" class="fields form-list form-list-admin">
   <li>
     <div class="field-name">
-      <?php print ($e ? $this->Form->label('server_id', _txt('fd.server')) : _txt('fd.server')); ?>
-      <span class="required">*</span>
+      <div class="field-title">
+        <?php print ($e ? $this->Form->label('server_id', _txt('pl.xnatprovisioner.server')) : _txt('pl.xnatprovisioner.server')); ?>
+        <span class="required">*</span>
+      </div>
+      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.server.desc'); ?></div>
     </div>
+
     <div class="field-info">
       <?php
         $attrs = array();
@@ -131,6 +135,51 @@
       ?>
     </div>
   </li>
+
+  <li>
+    <div class="field-name">
+      <div class="field-title">
+        <?php print ($e ? $this->Form->label('co_group_id', _txt('pl.xnatprovisioner.co_group_id')) : _txt('pl.xnatprovisioner.co_group_id')); ?>
+      </div>
+      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.co_group_id.desc'); ?></div>
+    </div>
+    <div class="field-info">
+      <?php
+        $attrs = array();
+        $attrs['value'] = (isset($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['co_group_id']) 
+                           ? $co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['co_group_id']
+                           : null);
+        
+        $attrs['empty'] = true;
+
+        if($e) {
+          print $this->Form->select('co_group_id',
+                                    $vv_co_groups,
+                                    $attrs);
+
+          if($this->Form->isFieldError('co_group_id')) {
+            print $this->Form->error('co_group_id');
+          }
+        } else {
+          if(!empty($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['co_group_id'])) {
+            print filter_var($vv_co_groups[ $co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['group_id'] ], FILTER_SANITIZE_SPECIAL_CHARS);
+          }
+        }
+      ?>
+    </div>
+  </li>
+
+  <li>
+    <div class="field-name">
+      <div class="field-title">
+        <?php print _txt('pl.xnatprovisioner.xnat_username_prefix'); ?>
+      </div>
+      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.xnat_username_prefix.desc'); ?></div>
+    </div>
+    <div class="field-info">
+      <?php print ($e ? $this->Form->input('xnat_username_prefix') : (isset($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['xnat_username_prefix']) ? _txt('fd.yes') : _txt('fd.no'))); ?>
+    </div>
+  </li>
   
   <li>
     <div class="field-name">
@@ -163,9 +212,11 @@
       </div>
       <div class="field-desc"><?php print _txt('pl.xnatprovisioner.include_attributes.desc'); ?></div>
     </div>
+
     <div class="field-info">
       <?php print ($e ? $this->Form->input('include_attributes') : (isset($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['include_attributes']) ? _txt('fd.yes') : _txt('fd.no'))); ?>
     </div>
+
   </li>
   
   <li>
@@ -187,7 +238,6 @@
     <div class="field-name">
       <div class="field-title">
         <?php print _txt('pl.xnatprovisioner.xnat_modified'); ?>
-        
       </div>
       <div class="field-desc"><?php print _txt('pl.xnatprovisioner.xnat_modified.desc'); ?></div>
     </div>
@@ -196,6 +246,15 @@
         print _txt($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['modified']);
         
       ?>
+    </div>
+  </li>
+
+  <li>
+    <div class="field-name">
+      <div class="field-title">
+        <?php print _txt('pl.xnatprovisioner.usage'); ?>
+      </div>
+      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.usage.desc'); ?></div>
     </div>
   </li>
   

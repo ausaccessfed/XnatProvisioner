@@ -51,6 +51,18 @@ class CoXnatProvisionerTargetsController extends SPTController {
     if(!$this->request->is('restful')) {
       $this->set('vv_identifiers_types', $this->CoXnatProvisionerTarget->CoProvisioningTarget->Co->CoPerson->Identifier->types($this->cur_co['Co']['id'], 'type'));
     }
+
+    if(!$this->request->is('restful')
+      // We don't need this for portal view, since we pull stuff in beforefilter
+      && $this->action != 'portal') {
+      // Pull the list of available groups
+      $args = array();
+      $args['conditions']['CoGroup.co_id'] = $this->cur_co['Co']['id'];
+      $args['conditions']['CoGroup.status'] = SuspendableStatusEnum::Active;
+      $args['order'] = array('CoGroup.name ASC');
+
+      $this->set('vv_co_groups', $this->Co->CoGroup->find("list", $args));
+    }
   }
   
   /**
