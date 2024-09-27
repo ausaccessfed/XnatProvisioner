@@ -95,15 +95,12 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         'unfreeze' => 'CO'
       )
     )
-
-
   );
 
 /* We could sanity check the server configuration here, but we'd need to
      pull the HttpServer object to get it. 
 */    
   public function beforeSave($options = array()) {
-    
     return true;
   } 
 
@@ -265,9 +262,6 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
       }    
     }
 
-    //$this->log("check jession field 1: " . print_r($coProvisioningTargetData, true));
-    //$this->log("check jession field 2: " . print_r($coProvisioningTargetData['CoXnatProvisionerTarget']['xnat_jsession'], true));
-
     if (isset($coProvisioningTargetData['CoXnatProvisionerTarget']['xnat_jsession'])) {  // is this a suitable check that the token is saved?
       //$this->log("FUNCTION createHttpClient - token IS saved!!");
 
@@ -293,7 +287,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         ));
       }
       return $this; 
-    } 
+    }
     return array();     // update to return a suitable error condition here instead of empty array?
   }
 
@@ -364,13 +358,12 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   }
 
   /**
-   * Find a single project in XNat on the linked server
-   *
    * @since  COmanage Registry v4.0.0
    * @param  array $coProvisioningTargetData    co Provisioning Target Data
    * @param  array $provisioningData            provisioning Data
-   * @return array $xnatProject                  XNat project details or empty array
+   * @return array $xnatProject                 XNat project details or empty array
    * 
+   * Find a single project in XNAT for the linked Server object
    */
   
    protected function findOneXnatProject($coProvisioningTargetData, $provisioningData) {
@@ -384,27 +377,19 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
 
       $xnatProjectId = $xnatProjectIdPrefix . strtolower($provisioningData['CoService']['short_label']);
       //$this->log("FUNCTION findXnatProject - xnatProjectId: " . print_r($xnatProjectId, true));
-
-      $xnatPath = "data/projects";
+      $xnatPath = "data/projects/" . $xnatProjectId . "?format=json";
       $this -> createHttpClient($coProvisioningTargetData, $provisioningData, "");
       $xnatProjectList = array();
-      $xnatProjectList = json_decode($this->Http->get("/" . $xnatPath), true);
+      $response = json_decode($this->Http->get("/" . $xnatPath), true);
 
-      //$this->log("Projects in XNAT list: " . print_r($xnatProjectList['ResultSet']['Result'], true));
-      
-      $count = -1;
-      if (!empty($xnatProjectList['ResultSet']['Result'])) {
-        $count = $xnatProjectList['ResultSet']['totalRecords'];
-        while ($count > 0) {                        // test if array functions will work here.
-          --$count;
-          //$this->log("Projects count: " . print_r($count, true));
-          if ($xnatProjectList['ResultSet']['Result'][$count]['ID'] == $xnatProjectId) {
-            //$this->log("VAL..... : " . print_r($xnatProjectList['ResultSet']['Result'][$count], true));
-            return $xnatProjectList['ResultSet']['Result'][$count];
-          }
-        }
+      if (!empty($response)) {
+        //$this->log("xnatProjectList details: " . print_r($response['items'][0]['data_fields'], true));
+        $xnatProjectList = ['ID' => $response['items'][0]['data_fields']['ID'],
+                            'name' => $response['items'][0]['data_fields']['name'],
+                            'secondary_ID' => $response['items'][0]['data_fields']['secondary_ID'],
+                            'description' => $response['items'][0]['data_fields']['description'] ];
       }
-      return array(); 
+      return $xnatProjectList;      
     }
   }
 
@@ -542,7 +527,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     
     $args = array();
     $args['conditions']['id'] = $target['id'];
-    $check = $this->find("all", $args);
+    $check = $this->find("first", $args);
     $this->log("FUNCTION saveJessionData - check save: " . print_r($check, true));
     if (empty($check)) {
       throw new InvalidArgumentException(_txt('er.notfound', array(_txt('ct.http_servers.1'), $check)));
@@ -625,19 +610,14 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $args['conditions']['CoService.co_group_id'] = $coProvisioningTargetData['CoXnatProvisionerTarget']['co_group_id'];
     $args['conditions'][] = 'CoService.short_label IS NOT NULL';
     $args['conditions']['CoService.status'] = "A";
-    $item = $CoService->find('all', $args);
-    //$this->log("FUNCTION syncPerson - Which CoService: " . print_r($item['CoService'], true));
+    $item = $CoService->find('first', $args);  // just need to find one project that meets this criteria - it will already be provisioned to XNAT
     
-    // $cmProjectsList[] = $item;
-    // Use this ^ instead of the following for loop v to return a non-empty array which is the only conditon we're interested in.
-
-    foreach ($item as $val) {
-      //$this->log("FUNCTION syncPerson - what val: " . print_r($val, true));
-      $cmProjectsList[] = ['short_label' => $val['CoService']['short_label']];
+    if (!empty($item)) {
+      $cmProjectsList = $item;
     }
   }
 
-  $this->log("FUNCTION syncPerson - what cmProjectsList: " . print_r($cmProjectsList, true));
+  //$this->log("FUNCTION syncPerson - what cmProjectsList: " . print_r($cmProjectsList, true));
 
   //if (empty($cmProjectsList)) {     // only works correclty for the UI, interferes with auto provisionng
   //  throw new InvalidArgumentException(_txt('er.coperson.group.none'));
@@ -838,7 +818,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
       }
       if ($updateProject) {          
         //$this->log("XML: " . print_r($xml, true));
-        $this -> createHttpClient($coProvisioningTargetData, "xml");
+        $this -> createHttpClient($coProvisioningTargetData, $provisioningData, "xml");
         $xnatPath = "data/projects/" . $xnatProjectId;
         $this->log("xnatPath: " . print_r($xnatPath, true));
         $response = $this->Http->put("/" . $xnatPath, $xml);
