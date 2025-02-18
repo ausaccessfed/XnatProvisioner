@@ -205,19 +205,6 @@
     </div>
   </li>
 
-  <li>
-    <div class="field-name">
-      <div class="field-title">
-        <?php print _txt('pl.xnatprovisioner.include_attributes'); ?>
-      </div>
-      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.include_attributes.desc'); ?></div>
-    </div>
-
-    <div class="field-info">
-      <?php print ($e ? $this->Form->input('include_attributes') : (isset($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['include_attributes']) ? _txt('fd.yes') : _txt('fd.no'))); ?>
-    </div>
-
-  </li>
   
   <li>
     <div class="field-name">
