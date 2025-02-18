@@ -355,6 +355,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     //$this->log("jsonMessage: " . print_r($jsonMessage, true));
     $response = $this->Http->post("/" . $xnatPath, $xml);
     $this->log("FUNCTION createProject - RESPONSE CODE: " . print_r($response->code, true));
+    $this->log("FUNCTION createProject - RESPONSE: " . print_r($response, true));
     if ($response->code < 200 || $response->code > 299) {
       throw new RuntimeException($response->reasonPhrase);
     }
@@ -684,7 +685,8 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   }
 
   if ($response) {
-    $this->log("FUNCTION syncPerson - RESULT: " . print_r($response->code, true));
+    $this->log("FUNCTION syncPerson - RESULT CODE: " . print_r($response->code, true));
+    $this->log("FUNCTION syncPerson - RESULT: " . print_r($response, true));
     if ($response->code < 200 || $response->code > 299) {
       throw new RuntimeException($response->reasonPhrase);
     }
@@ -796,6 +798,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         $this->log("xnatPath: " . print_r($xnatPath, true));
         $response = $this->Http->put("/" . $xnatPath, $xml);
         $this->log("Response Code XNAT Project update other details: " . print_r($response->code, true));
+        $this->log("Response: " . print_r($response, true));
         //$this->log("---------------------------------------------------------");
         if ($response->code < 200 || $response->code > 299) {
           throw new RuntimeException($response->reasonPhrase);
@@ -839,7 +842,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         $this->log("xnatPath: " . print_r($xnatPath, true));
         $response = $this->Http->put("/" . $xnatPath, $xml);
         $this->log("Response Code XNAT Project update Description: " . print_r($response->code, true));
-        $this->log("Response Code XNAT Project update Description: " . print_r($response, true));
+        $this->log("Response: " . print_r($response, true));
         //$this->log("---------------------------------------------------------");
         if ($response->code < 200 || $response->code > 299) {
           throw new RuntimeException($response->reasonPhrase);
@@ -880,6 +883,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $responseUser = $this->Http->get("/" . $xnatPathUser);
     //$this->log("responseUser: " . print_r($responseUser, true));
     $this->log("USER Response Code: " . print_r($responseUser->code, true));
+    $this->log("Response: " . print_r($responseUser, true));
     if ($responseUser->code < 200 || $responseUser->code > 299) {
       throw new RuntimeException($responseUser->reasonPhrase);
     }
@@ -975,7 +979,8 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
             $xnatPath = "xapi/users/" . $xnatUsername . "/groups/" . $val;
             //$this->log("xnat path: " . print_r($xnatPath, true));
             $response = $this->Http->put("/" . $xnatPath);
-            $this->log("SEND TO XNAT RESPONSE: ". print_r($response->code, true));
+            $this->log("SEND TO XNAT RESPONSE-CODE: ". print_r($response->code, true));
+            $this->log("SEND TO XNAT RESPONSE: ". print_r($response, true));
             if ($response->code < 200 || $response->code > 299) {
               //$this->log("response body: " . print_r($response->body, true));
               //throw new InvalidArgumentException(_txt('er.coperson.group.none'));
