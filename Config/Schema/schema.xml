@@ -45,6 +45,8 @@
 
     <field name="identifier_type" type="C" size="32" />
 
+    <!-- <field name="name_type" type="C" size="64" /> -->
+
     <field name="xnat_alias" type="C" size="36" />    
     <field name="xnat_estimated_expiration_time" type="BIGINT"/>
     <field name="xnat_jsession" type="C" size="40" />
@@ -61,11 +63,3 @@
     </index>
   </table>
 </schema>
-<!-- 
-<field name="xnat_secret" type="C" size="70" />  
-<field name="include_attributes" type="L" />
-
-
-
-
--->

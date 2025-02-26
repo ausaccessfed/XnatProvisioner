@@ -131,6 +131,42 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     return true;
   } 
 
+  /* Function for testing xml parser */
+  function testFUNCTION($op) {
+    /*
+    $xnatProjectId = "newID";
+    $xnatProjectTitle = "xnatProjectTitle_value";
+    $xnatRunningTitle = "xnatRunningTitle_value";
+    $xnatDescription = "a description_value";
+    $xmlArray = array(
+      'xnat:Project' => array(
+        '@ID' => $xnatProjectId,
+        '@secondary_ID' => $xnatRunningTitle,
+        'xnat:name' => $xnatProjectTitle,
+        'xnat:description' => $xnatDescription,
+        'xmlns:xnat' => 'http://nrg.wustl.edu/xnat'
+      )
+    );
+    */
+    $xmlArray = CoXnatProvisionerTarget::$xmlProjectArray;
+
+    $this->log("xmlArray =============================>: " . print_r($xmlArray, true));
+    $xmlArray['xnat:Project']['@ID'] = $xnatProjectId;
+    $xmlArray['xnat:Project']['@secondary_ID'] = $xnatRunningTitle;
+    $xmlArray['xnat:Project']['xnat:name'] = $xnatProjectTitle;
+    $xmlArray['xnat:Project']['xnat:description'] = $xnatDescription;
+    $this->log("xmlArray =============================>: " . print_r($xmlArray, true));
+    
+    try {
+      $xmlString = Xml::fromArray($xmlArray);
+      //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
+    } catch (XmlException $e) {
+        throw new InternalErrorException();  // update to a more suitable error message
+        return false;
+    }
+    return;    
+  }
+
   /**
    * Provision for the specified CO Person.
    *  
@@ -352,8 +388,13 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $xmlArray['xnat:Project']['xnat:description'] = $xnatDescription;
     //$this->log("xmlArray =============================>: " . print_r($xmlArray, true));
     
-    $xmlString = Xml::fromArray($xmlArray);
-    //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
+    try {
+      $xmlString = Xml::fromArray($xmlArray);
+      //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
+    } catch (XmlException $e) {
+        throw new InternalErrorException();  // update to a more suitable error message
+        return false;
+    }
 
     $this -> createHttpClient($coProvisioningTargetData, $provisioningData, "xml");
     $response = $this->Http->post("/data/projects", $xmlString->asXML());
@@ -392,9 +433,9 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
       $xnatProjectList = array();
       
       $response = json_decode($this->Http->get("/" . $xnatPath), true);
-      $this->log("FUNCTION findOneXnatProject - Response: " . print_r($response, true));
+      //$this->log("Response: " . print_r($response, true));
       if (!empty($response)) {
-        //$this->log("FUNCTION findOneXnatProject - XNAT response: " . print_r($response, true));
+        //$this->log("XNAT response: " . print_r($response, true));
         $xnatProjectList = ['ID'           => $response['items'][0]['data_fields']['ID'],
                             'name'         => $response['items'][0]['data_fields']['name'],
                             'secondary_ID' => $response['items'][0]['data_fields']['secondary_ID'] ];
@@ -404,9 +445,8 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         } else {
           $xnatProjectList['description'] = "";
         }
-        //$this->log("FUNCTION findOneXnatProject - xnatProjectList: " . print_r($xnatProjectList, true));
-        //$this->log("FUNCTION findOneXnatProject - xnatProjectList details: " . print_r($response['items'][0]['data_fields'], true));
-
+        //$this->log("xnatProjectList: " . print_r($xnatProjectList, true));
+        //$this->log("xnatProjectList details: " . print_r($response['items'][0]['data_fields'], true));
       }
       return $xnatProjectList;      
     }
@@ -430,7 +470,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $hostUrl = rtrim($srvr['HttpServer']['serverurl'], '/');
     $url = $hostUrl."/data/services/tokens/issue";
  
-    $options = $this->setSomeCurlOptions($url, $user, $passwd);
+    $options = $this -> setSomeCurlOptions($url, $user, $passwd);
     $item = curl_init();
     curl_setopt_array($item, $options);
     $aliasData = curl_exec($item);
@@ -439,21 +479,21 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     //$this->log("curl_getinfo info: " . print_r($info ,true));
     $aliasToken=json_decode($aliasData);
     // insert check here if authN failed or the alias artificat is empty.
-    $this->log("FUNCTION getXnatSessionToken - Response code 1: " . print_r($info["http_code"], true));
+    $this->log("Response code: " . print_r($info["http_code"], true));
     //$this->log("---------------------------------------------------------");
     if (($info["http_code"] != 200) || ($aliasToken->alias == null)) {
       return array();
     }
 
     $url=$hostUrl."/data/JSESSION";
-    $options = $this->setSomeCurlOptions($url, $aliasToken->alias, $aliasToken->secret);
+    $options = $this -> setSomeCurlOptions($url, $aliasToken->alias, $aliasToken->secret);
     $item = curl_init();
     curl_setopt_array($item, $options);
     $jession = curl_exec($item);
     curl_close($item);
     $info = curl_getinfo($item);
 
-    $this->log("getXnatSessionToken - Response code 2: " . print_r($info["http_code"], true));
+    $this->log("Response code: " . print_r($info["http_code"], true));
     //$this->log("---------------------------------------------------------");
     if (!empty($jession) || ($info["http_code"] != 200)) {
       return array(
@@ -590,14 +630,16 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   //$this->log("FUNCTION syncPerson - provisioningData: " . print_r($provisioningData, true));
   //$this->log("FUNCTION syncPerson - provisioningData[CoPersonRole]: " . print_r($provisioningData['CoPersonRole'], true));
   $this->log("FUNCTION syncPerson - uRoles: " . print_r($uRoles, true));
-  
+
   //CoPerson details
   $userEmail = $provisioningData['EmailAddress']['0']['mail']; // throw error if missing email address find type offical??
   $firstName = $provisioningData['PrimaryName']['given'];
   $lastName = $provisioningData['PrimaryName']['family'];
-  if (empty($lastName)) {$lastName = ".";}                  // XNAT wants a surname, users may turn up without a surname.
-  // $this->log("EmailAddress: " . print_r($provisioningData['EmailAddress']['0']['mail'], true));
 
+  if (empty($provisioningData['PrimaryName']['family'])) {
+    $lastName = "NoName";
+  }
+  
   $identifier = null;
   $identifierType = $coProvisioningTargetData['CoXnatProvisionerTarget']['identifier_type'];
   $this->log("identifierType: " . print_r($identifierType, true));
@@ -617,7 +659,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   $inXnat = array();
   $inXnat = json_decode($this->Http->get("/" . $xnatPath), true);
   
-  $this->log("FUNCTION syncPerson - inXnat: " . print_r($inXnat, true));
+  //$this->log("FUNCTION syncPerson - inXnat: " . print_r($inXnat, true));
 
   $cmProjectsList = array();
   $args = array();
@@ -691,7 +733,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   }
 
   if ($response) {
-    $this->log("FUNCTION syncPerson - RESULT CODE: " . print_r($response->code, true));
+    $this->log("FUNCTION syncPerson - RESULT: " . print_r($response->code, true));
     //$this->log("FUNCTION syncPerson - RESULT: " . print_r($response, true));
     if ($response->code < 200 || $response->code > 299) {
       throw new RuntimeException($response->reasonPhrase);
@@ -786,9 +828,15 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
       if ($updateProject) {
         $xmlArray['xnat:Project']['@ID'] = $xnatProjectId;
         //$this->log("xmlArray =============================>: " . print_r($xmlArray, true));
-        $xmlString = Xml::fromArray($xmlArray);
-        //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
         
+        try {
+          $xmlString = Xml::fromArray($xmlArray);
+          //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
+        } catch (XmlException $e) {
+            throw new InternalErrorException();  // update to a more suitable error message
+            return false;
+        }
+
         $this -> createHttpClient($coProvisioningTargetData, $provisioningData, "xml");
         $response = $this->Http->put("/data/projects/" . $xnatProjectId, $xmlString->asXML());
 
@@ -819,7 +867,7 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
     $this->log("FUNCTION syncUserRoles");
     //$this->log("FUNCTION syncUserRoles - coProvisioningTargetData: " . print_r($coProvisioningTargetData, true));
     //$this->log("FUNCTION syncUserRoles - provisioningData[CoPersonRole]: " . print_r($provisioningData['CoPersonRole'], true));
-    $this->log("FUNCTION syncUserRoles - userRoles: " . print_r($userRoles, true));
+    //$this->log("FUNCTION syncUserRoles - userRoles: " . print_r($userRoles, true));
     
     $userXnatGroups = array();
     $xnatProjectIdPrefix = $coProvisioningTargetData['CoXnatProvisionerTarget']['project_id_prefix'];

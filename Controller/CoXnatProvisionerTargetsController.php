@@ -50,7 +50,7 @@ class CoXnatProvisionerTargetsController extends SPTController {
     
     if(!$this->request->is('restful')) {
       $this->set('vv_identifiers_types', $this->CoXnatProvisionerTarget->CoProvisioningTarget->Co->CoPerson->Identifier->types($this->cur_co['Co']['id'], 'type'));
-      $this->set('vv_name_type', $this->CoXnatProvisionerTarget->CoProvisioningTarget->Co->CoPerson->Name->types($this->cur_co['Co']['id'], 'type'));
+    //  $this->set('vv_name_type', $this->CoXnatProvisionerTarget->CoProvisioningTarget->Co->CoPerson->Name->types($this->cur_co['Co']['id'], 'type'));
     }
 
     if(!$this->request->is('restful')
