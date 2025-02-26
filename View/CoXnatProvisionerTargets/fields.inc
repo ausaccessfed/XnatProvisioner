@@ -139,6 +139,37 @@
   <li>
     <div class="field-name">
       <div class="field-title">
+        <?php print _txt('pl.xnatprovisioner.name_type'); ?>
+        <span class="required">*</span>
+      </div>
+      <div class="field-desc"><?php print _txt('pl.xnatprovisioner.name_type.desc'); ?></div>
+    </div>
+    <div class="field-info">
+      <?php
+        $attrs = array();
+        $attrs['value'] = (isset($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['name_type'])
+                           ? $co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['name_type']
+                           : "");
+        $attrs['empty'] = true;
+
+        if($e) {
+          print $this->Form->select('name_type',
+                                    $vv_name_type,
+                                    $attrs);
+
+          if($this->Form->isFieldError('name_type')) {
+            print $this->Form->error('name_type');
+          }
+        } else {
+          print _txt('en.name_type.type', null, filter_var($co_xnat_provisioner_targets[0]['CoXnatProvisionerTarget']['name_type'],FILTER_SANITIZE_SPECIAL_CHARS));
+        }
+      ?>
+    </div>
+  </li>
+
+  <li>
+    <div class="field-name">
+      <div class="field-title">
         <?php print ($e ? $this->Form->label('co_group_id', _txt('pl.xnatprovisioner.co_group_id')) : _txt('pl.xnatprovisioner.co_group_id')); ?>
       </div>
       <div class="field-desc"><?php print _txt('pl.xnatprovisioner.co_group_id.desc'); ?></div>
