@@ -2,6 +2,8 @@
 
 ## Description: COmanage Plugin - XnatProvisioner
 
+This is plugin is under development and should be evaluated for suitability before deployment into a production environment.
+
 The **XnatProvisioner** is a COmanage Plugin https://incommon.org/software/comanage.
 
 This Plugin manages users and their project roles on the XNAT imaging platform https://www.xnat.org.
