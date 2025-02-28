@@ -66,6 +66,6 @@ Note: The XNAT _Running Title_ is the concat of _Project ID Prefix_ and the _Sho
 
 ## Versions
 This COmanage Plugin has been tested with the following platform versions:
-- COmanage: v4.3.3 and v4.3.4
+- COmanage: v4.3.3, v4.3.4,  v4.4.0
 - XNAT: version 1.8.10.1, build: 52
  

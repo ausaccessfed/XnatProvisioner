@@ -59,7 +59,7 @@ $cm_xnat_provisioner_texts['en_US'] = array(
   'pl.xnatprovisioner.xnat_modified.desc'          => 'When set, displays last modified time (UTC) for the XNAT API Token',
   'pl.xnatprovisioner.xnat_username_prefix'        => 'XNAT username prefix',
   'pl.xnatprovisioner.xnat_username_prefix.desc'   => 'This prefix is appended to the CILogon identifier used for XNAT usernames. <br>Max 6 characters, can be empty.',
-  'pl.xnatprovisioner.usage'                       => 'XNAT Provisioner Plugin version: v0.3.9 <br>COmanage: v4.3.x <br>  XNAT: v1.8.10.1, build: 52',
+  'pl.xnatprovisioner.usage'                       => 'XNAT Provisioner Plugin version: v0.3.9 <br>COmanage: v4.3.x/v4.4.x <br>  XNAT: v1.8.10.1, build: 52',
   'pl.xnatprovisioner.usage.desc'                  => 'Service Config conditions necessary for XNAT project creation: <br>
                                                       [Service][Name] = NOT empty <br>
                                                       [Service][Status] == Active <br>
