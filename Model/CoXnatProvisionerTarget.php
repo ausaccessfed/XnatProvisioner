@@ -107,20 +107,6 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
         'allowEmpty' => true,
         'unfreeze' => 'CO'
       )
-    ),
-    
-    'name_type' => array(
-      'content' => array(
-        'rule' => array('validateExtendedType',
-                        array('attribute' => 'Name.type',
-                              'default' => array(NameEnum::Alternate,
-                                                 NameEnum::Author,
-                                                 NameEnum::FKA,
-                                                 NameEnum::Official,
-                                                 NameEnum::Preferred))),
-        'required' => true,
-        'allowEmpty' => false
-      )
     )
   );
 
@@ -130,42 +116,6 @@ class CoXnatProvisionerTarget extends CoProvisionerPluginTarget {
   public function beforeSave($options = array()) {
     return true;
   } 
-
-  /* Function for testing xml parser */
-  function testFUNCTION($op) {
-    /*
-    $xnatProjectId = "newID";
-    $xnatProjectTitle = "xnatProjectTitle_value";
-    $xnatRunningTitle = "xnatRunningTitle_value";
-    $xnatDescription = "a description_value";
-    $xmlArray = array(
-      'xnat:Project' => array(
-        '@ID' => $xnatProjectId,
-        '@secondary_ID' => $xnatRunningTitle,
-        'xnat:name' => $xnatProjectTitle,
-        'xnat:description' => $xnatDescription,
-        'xmlns:xnat' => 'http://nrg.wustl.edu/xnat'
-      )
-    );
-    */
-    $xmlArray = CoXnatProvisionerTarget::$xmlProjectArray;
-
-    $this->log("xmlArray =============================>: " . print_r($xmlArray, true));
-    $xmlArray['xnat:Project']['@ID'] = $xnatProjectId;
-    $xmlArray['xnat:Project']['@secondary_ID'] = $xnatRunningTitle;
-    $xmlArray['xnat:Project']['xnat:name'] = $xnatProjectTitle;
-    $xmlArray['xnat:Project']['xnat:description'] = $xnatDescription;
-    $this->log("xmlArray =============================>: " . print_r($xmlArray, true));
-    
-    try {
-      $xmlString = Xml::fromArray($xmlArray);
-      //$this->log("xmlNew =============================>: " . print_r($xmlString->asXML(), true));
-    } catch (XmlException $e) {
-        throw new InternalErrorException();  // update to a more suitable error message
-        return false;
-    }
-    return;    
-  }
 
   /**
    * Provision for the specified CO Person.
