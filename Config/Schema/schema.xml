@@ -61,11 +61,3 @@
     </index>
   </table>
 </schema>
-<!-- 
-<field name="xnat_secret" type="C" size="70" />  
-<field name="include_attributes" type="L" />
-
-
-
-
--->

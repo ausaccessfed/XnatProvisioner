@@ -38,7 +38,7 @@ $cm_xnat_provisioner_texts['en_US'] = array(
   
   // Error messages
   'er.xnatprovisioner.id.none'        => 'No identifier of type %1$s found for CO Person',
-  'er.coservier.id.none'              => 'No id found for this service',
+  'er.coserver.id.none'              => 'No id found for this service',
   'er.service.group.none'             => 'This provisioner is not assigned to this service/project',
   'er.coperson.group.none'            => 'This provisioner is not assigned to this person',
   
@@ -46,25 +46,26 @@ $cm_xnat_provisioner_texts['en_US'] = array(
   'pl.xnatprovisioner.co_group_id'                 => 'Services linking group',
   'pl.xnatprovisioner.co_group_id.desc'            => 'Services assigned to this group are provisioned by this Provisioning Target.',
   'pl.xnatprovisioner.identifier_type'             => 'CoPerson Identifier Type',
-  'pl.xnatprovisioner.identifier_type.desc'        => 'The CO Person Identifier of this type will be used for the XNAT username. Chose carefully as XNAT usernames cannot be changed or updated after provisioning to XNAT!',
+  'pl.xnatprovisioner.identifier_type.desc'        => 'The CO Person Identifier of this type will be used for the XNAT username. <br>Chose carefully as XNAT usernames cannot be changed or updated after provisioning to XNAT!',
   'pl.xnatprovisioner.project_id_prefix'           => 'XNAT Project ID Prefix',
   'pl.xnatprovisioner.project_id_prefix.desc'      => 'Prefix XNAT project ID with this value, leave blank for no prefix. <br>Max 6 characters, can be empty.',
   'pl.xnatprovisioner.project_name_delimiter'      => 'Deliminter for XNat Project title',
   'pl.xnatprovisioner.project_name_delimiter.desc' => 'Deliminter value placed between COUs for XNat Project title, leave blank for no deliminter. <br>Max 3 characters, can be empty.',
   'pl.xnatprovisioner.server'                      => 'Target XNAT Server',
   'pl.xnatprovisioner.server.desc'                 => 'Select a target XNAT Server.',
-  'pl.xnatprovisioner.xnat_alias'                  => 'XNAT Alias',
+  'pl.xnatprovisioner.xnat_alias'                  => 'XNAT API Alias',
   'pl.xnatprovisioner.xnat_alias.desc'             => 'When set, displays the current XNAT API Alias',
-  'pl.xnatprovisioner.xnat_modified'               => 'XNAT Token last modified',
+  'pl.xnatprovisioner.xnat_modified'               => 'XNAT API Token last modified',
   'pl.xnatprovisioner.xnat_modified.desc'          => 'When set, displays last modified time (UTC) for the XNAT API Token',
   'pl.xnatprovisioner.xnat_username_prefix'        => 'XNAT username prefix',
   'pl.xnatprovisioner.xnat_username_prefix.desc'   => 'This prefix is appended to the CILogon identifier used for XNAT usernames. <br>Max 6 characters, can be empty.',
-  'pl.xnatprovisioner.usage'                       => 'XNAT Provisioner Plugin requirements: v0.3.2',
+  'pl.xnatprovisioner.usage'                       => 'XNAT Provisioner Plugin version: v0.3.9 <br>COmanage: v4.3.x/v4.4.x <br>  XNAT: v1.8.10.1, build: 52',
   'pl.xnatprovisioner.usage.desc'                  => 'Service Config conditions necessary for XNAT project creation: <br>
-                                                      [Service][status] == Active <br>
-                                                      [Service][cou_id] NOT empty <br>
-                                                      [Service][co_group_id] matches the Provisioning Target [co_group_id] <br>
-                                                      [Service][short_label] NOT empty'
+                                                      [Service][Name] = NOT empty <br>
+                                                      [Service][Status] == Active <br>
+                                                      [Service][COU] COPerson assigned COU Role  <br>
+                                                      [Service][Service Group] matches the Provisioning Target\'s "Services linking group" <br>
+                                                      [Service][Short Label] NOT empty'
 
     //'pl.xnatprovisioner.mode'                        => 'Protocol Mode',  
 );
